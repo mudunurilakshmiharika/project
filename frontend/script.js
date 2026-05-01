@@ -33,35 +33,34 @@ async function fetchProducts() {
 
 function displayProducts(products) {
   const container = document.getElementById("products-container");
+  if (!container) return;
   container.innerHTML = "";
 
   products.forEach(product => {
     const isWishlisted = wishlist.some(item => item._id === product._id);
     const card = document.createElement("div");
     card.className = "product-card";
-    card.onclick = (e) => {
-      if (!e.target.closest('button')) {
-        if (!checkLogin()) return;
-        showProductDetails(product._id);
-      }
-    };
+    
     card.innerHTML = `
-      <button class="btn-wishlist ${isWishlisted ? 'active' : ''}" onclick="toggleWishlist('${product._id}', event)">
-        <i class="${isWishlisted ? 'fas' : 'far'} fa-heart"></i>
-      </button>
-      <img src="${product.image}" alt="${product.name}" class="product-image">
-      <div class="product-info">
-        <p class="product-category">${product.category || 'General'}</p>
-        <h3 class="product-title">${product.name}</h3>
-        <p class="product-price">₹${product.price}</p>
-        <div class="actions">
-          <button class="btn-primary" onclick="addToCart('${product._id}')">
-            <i class="fas fa-cart-plus"></i> Add to Cart
-          </button>
-          <button class="btn-secondary" onclick="buyNow('${product._id}')">
-            Buy Now
-          </button>
+      <div class="product-image-container" onclick="showProductDetails('${product._id}')">
+        <button class="btn-wishlist ${isWishlisted ? 'active' : ''}" onclick="toggleWishlist('${product._id}', event)">
+          <i class="${isWishlisted ? 'fas' : 'far'} fa-bookmark"></i>
+        </button>
+        <img src="${product.image}" alt="${product.name}" class="product-image">
+        <div class="dots-container">
+          <div class="dot active"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
         </div>
+      </div>
+      <div class="product-card-info">
+        <div class="info-left" onclick="showProductDetails('${product._id}')">
+          <h3>${product.name}</h3>
+          <p class="price">RS. ${product.price.toLocaleString()}</p>
+        </div>
+        <button class="btn-add-quick" onclick="addToCart('${product._id}')">
+          <i class="fas fa-plus"></i>
+        </button>
       </div>
     `;
     container.appendChild(card);
@@ -184,14 +183,17 @@ function showSimilar(category, currentId) {
     similar.forEach(product => {
       const card = document.createElement("div");
       card.className = "product-card";
-      card.onclick = () => showProductDetails(product._id);
       card.innerHTML = `
-        <img src="${product.image}" alt="${product.name}" class="product-image">
-        <div class="product-info">
-          <h3 class="product-title">${product.name}</h3>
-          <p class="product-price">₹${product.price}</p>
-          <button class="btn-primary" onclick="addToCart('${product._id}')" style="width: 100%">
-            Add to Cart
+        <div class="product-image-container" onclick="showProductDetails('${product._id}')">
+          <img src="${product.image}" alt="${product.name}" class="product-image">
+        </div>
+        <div class="product-card-info">
+          <div class="info-left" onclick="showProductDetails('${product._id}')">
+            <h3>${product.name}</h3>
+            <p class="price">RS. ${product.price.toLocaleString()}</p>
+          </div>
+          <button class="btn-add-quick" onclick="addToCart('${product._id}')">
+            <i class="fas fa-plus"></i>
           </button>
         </div>
       `;

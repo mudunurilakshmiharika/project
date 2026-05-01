@@ -53,18 +53,20 @@
       const card = document.createElement("div");
       card.className = "product-card";
       card.innerHTML = `
-        <button class="btn-wishlist active" onclick="removeFromWishlist('${product._id}')">
-          <i class="fas fa-heart"></i>
-        </button>
-        <img src="${product.image}" alt="${product.name}" class="product-image">
-        <div class="product-info">
-          <h3 class="product-title">${product.name}</h3>
-          <p class="product-price">₹${product.price}</p>
-          <div class="actions">
-            <button class="btn-primary" onclick="moveToCart('${product._id}')">
-              Move to Cart
-            </button>
+        <div class="product-image-container">
+          <button class="btn-wishlist active" onclick="removeFromWishlist('${product._id}')">
+            <i class="fas fa-bookmark"></i>
+          </button>
+          <img src="${product.image}" alt="${product.name}" class="product-image">
+        </div>
+        <div class="product-card-info">
+          <div class="info-left">
+            <h3>${product.name}</h3>
+            <p class="price">RS. ${product.price.toLocaleString()}</p>
           </div>
+          <button class="btn-add-quick" onclick="moveToCart('${product._id}')">
+            <i class="fas fa-cart-plus"></i>
+          </button>
         </div>
       `;
       container.appendChild(card);
