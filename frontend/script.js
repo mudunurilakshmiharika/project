@@ -5,13 +5,29 @@ let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
 let allProducts = [];
 
 async function fetchProducts() {
+  const container = document.getElementById("products-container");
   try {
     const response = await fetch(API_URL);
+    if (!response.ok) throw new Error("Failed to fetch products");
+    
     allProducts = await response.json();
-    displayProducts(allProducts);
+    
+    if (allProducts.length === 0) {
+      container.innerHTML = "<p style='grid-column: 1/-1; text-align: center; padding: 2rem;'>No products found in the database. Please run the seed script.</p>";
+    } else {
+      displayProducts(allProducts);
+    }
     updateCounts();
   } catch (error) {
     console.error("Error fetching products:", error);
+    if (container) {
+      container.innerHTML = `
+        <div style="grid-column: 1/-1; text-align: center; padding: 2rem; background: #fee2e2; border-radius: 1rem; color: #991b1b;">
+          <p><strong>Connection Error:</strong> Could not connect to the backend server.</p>
+          <p style="font-size: 0.875rem; margin-top: 0.5rem;">Make sure your backend is running on http://localhost:5000</p>
+        </div>
+      `;
+    }
   }
 }
 
@@ -192,22 +208,29 @@ function updateCounts() {
 }
 
 function checkAuth() {
-  const user = JSON.parse(localStorage.getItem("user"));
-  const loginLink = document.getElementById("login-link");
-  const signupLink = document.getElementById("signup-link");
-  const logoutLink = document.getElementById("logout-link");
-  const userName = document.getElementById("user-name");
+  try {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const loginLink = document.getElementById("login-link");
+    const signupLink = document.getElementById("signup-link");
+    const logoutLink = document.getElementById("logout-link");
+    const userName = document.getElementById("user-name");
 
-  if (user) {
-    loginLink.style.display = "none";
-    signupLink.style.display = "none";
-    logoutLink.style.display = "inline";
-    userName.innerText = `Hi, ${user.name.split(' ')[0]}`;
-  } else {
-    loginLink.style.display = "inline";
-    signupLink.style.display = "inline";
-    logoutLink.style.display = "none";
-    userName.innerText = "";
+    if (!loginLink || !signupLink || !logoutLink || !userName) return;
+
+    if (user && user.name) {
+      loginLink.style.display = "none";
+      signupLink.style.display = "none";
+      logoutLink.style.display = "inline";
+      userName.innerText = `Hi, ${user.name.split(' ')[0]}`;
+    } else {
+      loginLink.style.display = "inline";
+      signupLink.style.display = "inline";
+      logoutLink.style.display = "none";
+      userName.innerText = "";
+    }
+  } catch (error) {
+    console.error("Auth check failed:", error);
+    localStorage.removeItem("user"); // Clear malformed data
   }
 }
 
