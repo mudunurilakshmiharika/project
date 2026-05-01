@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Wishlist | LuxeStore</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="logo">
+    <i class="fas fa-shopping-bag"></i> LuxeStore
+  </a>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="wishlist.html">Wishlist</a>
+    <a href="cart.html">Cart</a>
+  </nav>
+</header>
+
+<main class="container">
+  <h2>Your Wishlist</h2>
+  <div class="products-grid" id="wishlist-items">
+    <!-- Wishlist items will be loaded here -->
+  </div>
+
+  <div id="empty-wishlist" style="text-align: center; margin-top: 4rem; display: none;">
+    <i class="far fa-heart fa-4x" style="color: #cbd5e1; margin-bottom: 1rem;"></i>
+    <h3>Your wishlist is empty</h3>
+    <a href="index.html" class="btn-primary" style="display: inline-block; margin-top: 1rem; text-decoration: none;">Explore Products</a>
+  </div>
+</main>
+
+<script>
+  let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+
+  function displayWishlist() {
+    const container = document.getElementById("wishlist-items");
+    const empty = document.getElementById("empty-wishlist");
+    
+    if (wishlist.length === 0) {
+      container.innerHTML = "";
+      empty.style.display = "block";
+      return;
+    }
+
+    empty.style.display = "none";
+    container.innerHTML = "";
+
+    wishlist.forEach((product, index) => {
+      const card = document.createElement("div");
+      card.className = "product-card";
+      card.innerHTML = `
+        <button class="btn-wishlist active" onclick="removeFromWishlist('${product._id}')">
+          <i class="fas fa-heart"></i>
+        </button>
+        <img src="${product.image}" alt="${product.name}" class="product-image">
+        <div class="product-info">
+          <h3 class="product-title">${product.name}</h3>
+          <p class="product-price">₹${product.price}</p>
+          <div class="actions">
+            <button class="btn-primary" onclick="moveToCart('${product._id}')">
+              Move to Cart
+            </button>
+          </div>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  function removeFromWishlist(id) {
+    wishlist = wishlist.filter(item => item._id !== id);
+    localStorage.setItem("wishlist", JSON.stringify(wishlist));
+    displayWishlist();
+  }
+
+  function moveToCart(id) {
+    const item = wishlist.find(p => p._id === id);
+    if (item) {
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      cart.push(item);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      removeFromWishlist(id);
+      alert("Moved to cart!");
+    }
+  }
+
+  displayWishlist();
+</script>
+</body>
+</html>

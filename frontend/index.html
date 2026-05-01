@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LuxeStore | Premium E-Commerce</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+
+  <header>
+    <a href="index.html" class="logo">
+      <i class="fas fa-shopping-bag"></i> LuxeStore
+    </a>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="wishlist.html">Wishlist <span id="wishlist-count" class="cart-badge">0</span></a>
+      <a href="cart.html">Cart <span id="cart-count" class="cart-badge">0</span></a>
+      <div id="auth-links" style="display: inline-flex; gap: 1rem;">
+        <a href="login.html" id="login-link">Login</a>
+        <a href="signup.html" id="signup-link">Sign Up</a>
+        <a href="#" id="logout-link" style="display: none;" onclick="logout()">Logout</a>
+        <span id="user-name" style="font-weight: 600; color: var(--primary);"></span>
+      </div>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section id="product-list-view">
+      <h2>Featured Products</h2>
+      <div class="products-grid" id="products-container">
+        <!-- Products will be loaded here -->
+      </div>
+    </section>
+
+    <section id="product-details-view" style="display: none;">
+      <button class="btn-secondary" onclick="backToList()" style="margin-bottom: 2rem;">
+        <i class="fas fa-arrow-left"></i> Back to Products
+      </button>
+      <div id="product-details-content">
+        <!-- Detailed product info will be loaded here -->
+      </div>
+    </section>
+
+    <section class="similar-items" id="similar-section" style="display: none;">
+      <h2>Similar Items</h2>
+      <div class="products-grid" id="similar-container">
+        <!-- Similar products will be loaded here -->
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+
+</html>

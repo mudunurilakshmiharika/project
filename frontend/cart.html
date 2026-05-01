@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Cart | LuxeStore</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    .cart-item {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      background: white;
+      padding: 1.5rem;
+      border-radius: 1rem;
+      margin-bottom: 1rem;
+      box-shadow: var(--shadow);
+    }
+    .cart-item img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 0.5rem;
+    }
+    .cart-item-info {
+      flex: 1;
+    }
+    .cart-summary {
+      background: white;
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: var(--shadow);
+      margin-top: 2rem;
+      text-align: right;
+    }
+    .total-price {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .payment-options {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .payment-btn {
+      justify-content: flex-start;
+      padding: 1.25rem !important;
+      font-size: 1.125rem !important;
+      width: 100%;
+    }
+    .payment-btn i {
+      width: 40px;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="logo">
+    <i class="fas fa-shopping-bag"></i> LuxeStore
+  </a>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="wishlist.html">Wishlist</a>
+    <a href="cart.html">Cart</a>
+  </nav>
+</header>
+
+<main class="container">
+  <h2>Shopping Cart</h2>
+  <div id="cart-items">
+    <!-- Cart items will be loaded here -->
+  </div>
+
+  <div class="cart-summary" id="cart-summary" style="display: none;">
+    <p>Total Items: <span id="total-items">0</span></p>
+    <p class="total-price">Total Price: ₹<span id="total-price">0</span></p>
+    <button class="btn-primary" id="checkout-btn" style="margin-top: 1rem; padding: 1rem 2rem;" onclick="showAddressSection()">
+      Proceed to Checkout
+    </button>
+  </div>
+
+  <div id="address-section" class="cart-summary" style="display: none; text-align: left;">
+    <h3 style="margin-bottom: 1.5rem;">Shipping Address</h3>
+    <div class="address-form">
+      <div class="form-group" style="margin-bottom: 1rem;">
+        <label>Full Name</label>
+        <input type="text" id="ship-name" placeholder="Enter your name" style="width: 100%; padding: 0.75rem; border-radius: 0.5rem; border: 1px solid #e2e8f0;">
+      </div>
+      <div class="form-group" style="margin-bottom: 1rem;">
+        <label>Address</label>
+        <textarea id="ship-address" placeholder="Enter your full address" style="width: 100%; padding: 0.75rem; border-radius: 0.5rem; border: 1px solid #e2e8f0;"></textarea>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+        <div class="form-group">
+          <label>City</label>
+          <input type="text" id="ship-city" placeholder="City" style="width: 100%; padding: 0.75rem; border-radius: 0.5rem; border: 1px solid #e2e8f0;">
+        </div>
+        <div class="form-group">
+          <label>Pincode</label>
+          <input type="text" id="ship-pincode" placeholder="Pincode" style="width: 100%; padding: 0.75rem; border-radius: 0.5rem; border: 1px solid #e2e8f0;">
+        </div>
+      </div>
+    </div>
+    <button class="btn-primary" style="width: 100%; padding: 1rem;" onclick="showMethodSelection()">
+      Continue
+    </button>
+    <button class="btn-secondary" style="margin-top: 1rem;" onclick="backToCart()">
+      <i class="fas fa-arrow-left"></i> Back to Cart
+    </button>
+  </div>
+
+  <div id="method-selection-section" class="cart-summary" style="display: none; text-align: left;">
+    <h3 style="margin-bottom: 1.5rem;">Payment Method</h3>
+    <button class="btn-secondary payment-btn" onclick="handleMethodChoice('Online')">
+      <i class="fas fa-globe"></i> Online Payment (GPay, PhonePe, Card)
+    </button>
+    <button class="btn-secondary payment-btn" style="margin-top: 1rem;" onclick="handleMethodChoice('COD')">
+      <i class="fas fa-truck"></i> Cash on Delivery
+    </button>
+    <button class="btn-secondary" style="margin-top: 2rem;" onclick="backToAddress()">
+      <i class="fas fa-arrow-left"></i> Back to Address
+    </button>
+  </div>
+
+  <div id="payment-section" class="cart-summary" style="display: none; text-align: left;">
+    <h3 style="margin-bottom: 1.5rem;">Online Payment Options</h3>
+    <div class="payment-options">
+      <button class="btn-secondary payment-btn" onclick="submitOrder('Google Pay')">
+        <i class="fab fa-google-pay fa-2x"></i> Google Pay
+      </button>
+      <button class="btn-secondary payment-btn" onclick="submitOrder('PhonePe')">
+        <i class="fas fa-mobile-alt"></i> PhonePe
+      </button>
+      <button class="btn-secondary payment-btn" onclick="submitOrder('Credit/Debit Card')">
+        <i class="fas fa-credit-card"></i> Card
+      </button>
+    </div>
+    <button class="btn-secondary" style="margin-top: 1rem;" onclick="showMethodSelection()">
+      <i class="fas fa-arrow-left"></i> Back
+    </button>
+  </div>
+  <div id="empty-cart" style="text-align: center; margin-top: 4rem;">
+    <i class="fas fa-shopping-cart fa-4x" style="color: #cbd5e1; margin-bottom: 1rem;"></i>
+    <h3>Your cart is empty</h3>
+    <a href="index.html" class="btn-primary" style="display: inline-block; margin-top: 1rem; text-decoration: none;">Continue Shopping</a>
+  </div>
+</main>
+
+<script>
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+  function displayCart() {
+    const container = document.getElementById("cart-items");
+    const summary = document.getElementById("cart-summary");
+    const empty = document.getElementById("empty-cart");
+    
+    if (cart.length === 0) {
+      container.innerHTML = "";
+      summary.style.display = "none";
+      empty.style.display = "block";
+      return;
+    }
+
+    empty.style.display = "none";
+    summary.style.display = "block";
+    container.innerHTML = "";
+
+    let total = 0;
+    cart.forEach((item, index) => {
+      total += item.price;
+      const div = document.createElement("div");
+      div.className = "cart-item";
+      div.innerHTML = `
+        <img src="${item.image}" alt="${item.name}">
+        <div class="cart-item-info">
+          <h3>${item.name}</h3>
+          <p class="product-price">₹${item.price}</p>
+        </div>
+        <button class="btn-secondary" onclick="removeFromCart(${index})" style="color: #ef4444;">
+          <i class="fas fa-trash"></i>
+        </button>
+      `;
+      container.appendChild(div);
+    });
+
+    document.getElementById("total-items").innerText = cart.length;
+    document.getElementById("total-price").innerText = total;
+  }
+
+  function removeFromCart(index) {
+    cart.splice(index, 1);
+    localStorage.setItem("cart", JSON.stringify(cart));
+    displayCart();
+  }
+
+  function showAddressSection() {
+    document.getElementById("cart-summary").style.display = "none";
+    document.getElementById("address-section").style.display = "block";
+    document.getElementById("cart-items").style.display = "none";
+  }
+
+  function backToCart() {
+    document.getElementById("cart-summary").style.display = "block";
+    document.getElementById("address-section").style.display = "none";
+    document.getElementById("cart-items").style.display = "block";
+  }
+
+  function showMethodSelection() {
+    const name = document.getElementById("ship-name").value;
+    const address = document.getElementById("ship-address").value;
+    
+    if (!name || !address) {
+      alert("Please fill in your name and address.");
+      return;
+    }
+
+    document.getElementById("address-section").style.display = "none";
+    document.getElementById("method-selection-section").style.display = "block";
+    document.getElementById("payment-section").style.display = "none";
+  }
+
+  function backToAddress() {
+    document.getElementById("address-section").style.display = "block";
+    document.getElementById("method-selection-section").style.display = "none";
+  }
+
+  function handleMethodChoice(choice) {
+    if (choice === 'COD') {
+      submitOrder('Cash on Delivery');
+    } else {
+      document.getElementById("method-selection-section").style.display = "none";
+      document.getElementById("payment-section").style.display = "block";
+    }
+  }
+
+  async function submitOrder(method) {
+    const total = document.getElementById("total-price").innerText;
+    const name = document.getElementById("ship-name").value;
+    const address = document.getElementById("ship-address").value;
+    const city = document.getElementById("ship-city").value;
+    const pincode = document.getElementById("ship-pincode").value;
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    // UPI Deep Link for Mobile (Simulation)
+    const vpa = "luxestore@upi"; // Dummy UPI ID
+    const upiLink = `upi://pay?pa=${vpa}&pn=LuxeStore&am=${total}&cu=INR&tn=Order_Payment`;
+
+    if (method !== 'Cash on Delivery') {
+      // Attempt to open UPI apps on mobile
+      alert(`Opening ${method} securely...`);
+      window.location.href = upiLink;
+      
+      // Since we can't detect payment success here without a PG, 
+      // we assume the user returns and clicks OK.
+      if (!confirm("Did you complete the payment in your app?")) {
+        return;
+      }
+    }
+
+    const orderData = {
+      userId: user ? user.id : null,
+      items: cart,
+      totalAmount: parseFloat(total),
+      shippingAddress: { name, address, city, pincode },
+      paymentMethod: method
+    };
+
+    try {
+      const response = await fetch("http://localhost:5000/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(orderData)
+      });
+
+      if (response.ok) {
+        alert(`Order Placed Successfully! Admin has been notified via email.`);
+        localStorage.removeItem("cart");
+        window.location.href = "index.html";
+      } else {
+        alert("Failed to place order. Please try again.");
+      }
+    } catch (error) {
+      console.error("Order Error:", error);
+      alert("Error connecting to server.");
+    }
+  }
+
+  displayCart();
+</script>
+</body>
+</html>
