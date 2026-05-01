@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:5000/api/products";
+const API_URL = "https://project-7-zgr1.onrender.com/api/products";
 
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
@@ -24,7 +24,7 @@ async function fetchProducts() {
       container.innerHTML = `
         <div style="grid-column: 1/-1; text-align: center; padding: 2rem; background: #fee2e2; border-radius: 1rem; color: #991b1b;">
           <p><strong>Connection Error:</strong> Could not connect to the backend server.</p>
-          <p style="font-size: 0.875rem; margin-top: 0.5rem;">Make sure your backend is running on http://localhost:5000</p>
+          <p style="font-size: 0.875rem; margin-top: 0.5rem;">Make sure your backend is running at https://project-7-zgr1.onrender.com</p>
         </div>
       `;
     }
