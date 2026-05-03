@@ -168,11 +168,68 @@ async function buyNow(id) {
   if (!checkLogin()) return;
 
   const product = allProducts.find(p => p._id === id);
-  if (product) {
-    cart.push(product);
-    localStorage.setItem("cart", JSON.stringify(cart));
-    updateCounts();
-    window.location.href = "cart.html";
+  if (!product) {
+    alert("Product not found!");
+    return;
+  }
+
+  const user = JSON.parse(localStorage.getItem("user"));
+  const amount = product.price;
+
+  try {
+    const PAYMENT_BASE = window.location.hostname === "project-7-zgr1.onrender.com" 
+        ? "https://project-7-zgr1.onrender.com" 
+        : "http://localhost:5000";
+
+    // 1. Create Razorpay Order on Backend
+    const orderRes = await fetch(`${PAYMENT_BASE}/api/payment/create-order`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ amount })
+    });
+    const orderData = await orderRes.json();
+
+    // 2. Open Razorpay Checkout
+    const options = {
+      key: "rzp_test_SkrOcHNiHMEIIH",
+      amount: orderData.amount,
+      currency: "INR",
+      name: "LuxeStore",
+      description: `Buying ${product.name}`,
+      order_id: orderData.id,
+      handler: async function (response) {
+        const verifyRes = await fetch(`${PAYMENT_BASE}/api/payment/verify`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ...response,
+            email: user.email,
+            products: [product],
+            amount: product.price
+          })
+        });
+
+        const data = await verifyRes.json();
+        if (data.success) {
+          alert("✅ Payment Successful & Order Saved!");
+          window.location.href = "success.html"; 
+        } else {
+          alert("❌ Payment failed: " + (data.message || "Unknown error"));
+        }
+      },
+      prefill: {
+        name: user.name,
+        email: user.email
+      },
+      theme: { color: "#1e293b" }
+    };
+
+    const rzp = new Razorpay(options);
+    rzp.open();
+
+  } catch (error) {
+    console.error("Buy Now Error:", error);
+    alert("Error initiating checkout. Please try again.");
   }
 }
 
