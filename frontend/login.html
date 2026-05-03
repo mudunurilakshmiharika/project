@@ -4,45 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login | LuxeStore</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=2">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <style>
-    .auth-container {
-      max-width: 400px;
-      margin: 4rem auto;
-      background: white;
-      padding: 2.5rem;
-      border-radius: 1.5rem;
-      box-shadow: var(--shadow);
-    }
-    .form-group {
-      margin-bottom: 1.5rem;
-    }
-    .form-group label {
-      display: block;
-      margin-bottom: 0.5rem;
-      font-weight: 600;
-      color: var(--text-main);
-    }
-    .form-group input {
-      width: 100%;
-      padding: 0.75rem;
-      border: 1px solid #e2e8f0;
-      border-radius: 0.5rem;
-      outline: none;
-      transition: var(--transition);
-    }
-    .form-group input:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-    }
-    .auth-title {
-      text-align: center;
-      margin-bottom: 2rem;
-      font-size: 2rem;
-      font-weight: 800;
-    }
-  </style>
 </head>
 <body>
 
@@ -66,20 +29,24 @@
       </div>
       <button type="submit" class="btn-auth">Login</button>
     </form>
-    <p style="margin-top: 1.5rem; text-align: center; font-size: 0.85rem; color: #666;">
-      Don't have an account? <a href="signup.html" style="color: #000; font-weight: 600;">Sign Up</a>
+    <p style="margin-top: 1.5rem; text-align: center; font-size: 0.85rem; color: var(--secondary);">
+      Don't have an account? <a href="signup.html" style="color: #fff; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Sign Up</a>
     </p>
   </div>
 </main>
 
 <script>
+  const AUTH_API = window.location.hostname === "project-7-zgr1.onrender.com" 
+    ? "https://project-7-zgr1.onrender.com/api/auth/signin" 
+    : "http://localhost:5000/api/auth/signin";
+
   document.getElementById("login-form").addEventListener("submit", async (e) => {
     e.preventDefault();
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
 
     try {
-      const res = await fetch("https://project-7-zgr1.onrender.com/api/auth/signin", {
+      const res = await fetch(AUTH_API, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password })

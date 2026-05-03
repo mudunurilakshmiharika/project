@@ -1,13 +1,13 @@
 :root {
-  --primary: #000000;
-  --secondary: #666666;
-  --accent: #ffffff;
-  --background: #f4f4f4;
-  --card-bg: #ffffff;
-  --text-main: #000000;
+  --primary: #ffffff;
+  --secondary: #a0a0a0;
+  --accent: #ff4444;
+  --background: #121212;
+  --card-bg: #1e1e1e;
+  --text-main: #ffffff;
   --text-muted: #888888;
-  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  --radius: 12px;
+  --transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  --radius: 0px; /* Sharp corners for high fashion look */
 }
 
 * {
@@ -24,25 +24,25 @@ body {
 }
 
 header {
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(10px);
-  padding: 1rem 5%;
+  background: rgba(18, 18, 18, 0.8);
+  backdrop-filter: blur(20px);
+  padding: 1.5rem 5%;
   display: flex;
   justify-content: space-between;
   align-items: center;
   position: sticky;
   top: 0;
   z-index: 1000;
-  border-bottom: 1px solid #eeeeee;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .logo {
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #000;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #fff;
   text-decoration: none;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 3px;
 }
 
 nav {
@@ -53,14 +53,16 @@ nav {
 
 nav a {
   text-decoration: none;
-  color: #000;
-  font-size: 0.9rem;
+  color: #fff;
+  font-size: 0.85rem;
   font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1px;
   transition: var(--transition);
 }
 
 nav a:hover {
-  opacity: 0.6;
+  color: var(--secondary);
 }
 
 .cart-badge {
@@ -168,25 +170,26 @@ nav a:hover {
   font-size: 0.85rem;
   font-weight: 500;
   margin-bottom: 0.25rem;
-  color: #333;
+  color: #fff;
 }
 
 .info-left .price {
   font-size: 0.85rem;
-  color: #666;
+  color: var(--secondary);
 }
 
 .btn-add-quick {
   background: transparent;
   border: none;
   font-size: 1.2rem;
-  color: #000;
+  color: #fff;
   cursor: pointer;
   padding: 0.25rem;
   transition: var(--transition);
 }
 
 .btn-add-quick:hover {
+  color: var(--accent);
   transform: scale(1.2);
 }
 
@@ -215,10 +218,11 @@ nav a:hover {
 .auth-container {
   max-width: 400px;
   margin: 5rem auto;
-  padding: 2rem;
-  background: #fff;
+  padding: 2.5rem;
+  background: var(--card-bg);
   border-radius: var(--radius);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .auth-container h2 {
@@ -253,14 +257,117 @@ nav a:hover {
 
 .btn-auth {
   width: 100%;
-  padding: 0.75rem;
-  background: #000;
-  color: #fff;
+  padding: 1rem;
+  background: #fff;
+  color: #000;
   border: none;
-  border-radius: 8px;
-  font-weight: 600;
+  border-radius: 4px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
   cursor: pointer;
+  margin-top: 1.5rem;
+  transition: var(--transition);
+}
+
+.btn-auth:hover {
+  background: var(--secondary);
+}
+
+/* Product Details View Styles */
+.details-container {
+  display: flex;
+  gap: 4rem;
+  align-items: flex-start;
+  margin-top: 2rem;
+  animation: fadeIn 0.8s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.details-image {
+  flex: 1;
+  width: 100%;
+  max-width: 600px;
+  aspect-ratio: 4/5;
+  object-fit: cover;
+  border-radius: var(--radius);
+  background: var(--card-bg);
+}
+
+.details-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.product-category {
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 0.75rem;
+  color: var(--secondary);
+}
+
+.details-info h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.details-price {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--secondary);
+}
+
+.details-description {
+  line-height: 1.6;
+  color: var(--secondary);
+  font-size: 1rem;
+  max-width: 500px;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
   margin-top: 1rem;
+}
+
+.btn-primary {
+  flex: 2;
+  background: #fff;
+  color: #000;
+  border: none;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-primary:hover {
+  background: var(--secondary);
+}
+
+.btn-secondary {
+  flex: 1;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: #fff;
 }
 
 /* Responsive */
@@ -276,12 +383,35 @@ nav a:hover {
     gap: 1rem;
   }
   
+  header {
+    padding: 1rem 5%;
+  }
+
+  .logo {
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+  }
+
   nav {
     gap: 1rem;
   }
   
-  .logo {
-    font-size: 1rem;
+  nav a {
+    font-size: 0.7rem;
+  }
+
+  /* Stack Details on Mobile */
+  .details-container {
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .details-info h1 {
+    font-size: 1.8rem;
+  }
+
+  .actions {
+    flex-direction: column;
   }
 }
 
@@ -292,5 +422,9 @@ nav a:hover {
   
   .container {
     padding: 1rem 5%;
+  }
+
+  .section-header h2 {
+    font-size: 0.8rem;
   }
 }

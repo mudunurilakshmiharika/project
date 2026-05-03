@@ -1,16 +1,38 @@
-const API_URL = "https://project-7-zgr1.onrender.com/api/products";
+const API_URL = window.location.hostname === "project-7-zgr1.onrender.com" 
+    ? "https://project-7-zgr1.onrender.com/api/products" 
+    : "http://localhost:5000/api/products";
 
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
 let allProducts = [];
 
+// 👉 Fallback data in case the backend is unreachable (e.g. CORS issues with file://)
+const FALLBACK_PRODUCTS = [
+  { _id: "f1", name: "Premium Leather Jacket", price: 12999, image: "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=800", category: "Men's Fashion", description: "Authentic black leather jacket displayed on a professional mannequin." },
+  { _id: "f2", name: "Slim Fit Denim Jeans", price: 3499, image: "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=800", category: "Men's Fashion", description: "Classic dark blue slim-fit denim, mannequin display." },
+  { _id: "f3", name: "Cotton Crew Neck T-Shirt", price: 999, image: "https://images.unsplash.com/photo-1544441893-675973e31985?w=800", category: "Men's Fashion", description: "Soft 100% cotton t-shirt, studio mannequin shot." },
+  { _id: "f4", name: "Formal White Shirt", price: 2499, image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800", category: "Men's Fashion", description: "Crisp white button-down shirt for a sharp look." },
+  { _id: "f5", name: "Casual Bomber Jacket", price: 5999, image: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=800", category: "Men's Fashion", description: "Versatile olive green bomber on display." },
+  { _id: "f6", name: "Chino Trousers", price: 2799, image: "https://images.unsplash.com/photo-1594932224012-c59d04584999?w=800", category: "Men's Fashion", description: "Smart-casual beige chinos, catalog style." },
+  { _id: "f7", name: "Knitted Sweater", price: 3999, image: "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=800", category: "Men's Fashion", description: "Warm grey knitted sweater, mannequin fit." },
+  { _id: "f8", name: "Chelsea Boots", price: 8999, image: "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=800", category: "Men's Fashion", description: "Stylish brown suede Chelsea boots." },
+  { _id: "f9", name: "Canvas Sneakers", price: 4499, image: "https://images.unsplash.com/photo-1542272454315-4c01d7abdf4a?w=800", category: "Men's Fashion", description: "Minimalist white canvas sneakers." },
+  { _id: "f10", name: "Premium Wool Coat", price: 15999, image: "https://images.unsplash.com/photo-1539533018447-63fcce2678e3?w=800", category: "Men's Fashion", description: "Luxurious charcoal wool overcoat on mannequin." },
+  { _id: "f11", name: "Premium Wireless Headphones", price: 24999, image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800", category: "Electronics", description: "High-quality noise-canceling headphones." },
+  { _id: "f12", name: "Modern Smartwatch", price: 15999, image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800", category: "Electronics", description: "A sleek smartwatch." },
+  { _id: "f13", name: "Bluetooth Speaker", price: 7999, image: "https://images.unsplash.com/photo-1608156639585-b3a032ef9689?w=800", category: "Audio", description: "Compact speaker with rich sound." },
+  { _id: "f14", name: "Gaming Mouse", price: 5499, image: "https://images.unsplash.com/photo-1527698266440-12104e498b76?w=800", category: "Electronics", description: "Ergonomic gaming mouse." }
+];
+
 async function fetchProducts() {
   const container = document.getElementById("products-container");
   try {
+    console.log("Fetching products from:", API_URL);
     const response = await fetch(API_URL);
-    if (!response.ok) throw new Error("Failed to fetch products");
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
     
     allProducts = await response.json();
+    console.log("Products loaded:", allProducts.length);
     
     if (allProducts.length === 0) {
       container.innerHTML = "<p style='grid-column: 1/-1; text-align: center; padding: 2rem;'>No products found in the database. Please run the seed script.</p>";
@@ -20,7 +42,12 @@ async function fetchProducts() {
     updateCounts();
   } catch (error) {
     console.error("Error fetching products:", error);
-    if (container) {
+    console.log("Using fallback local data...");
+    allProducts = FALLBACK_PRODUCTS;
+    displayProducts(allProducts);
+    updateCounts();
+    
+    if (container && allProducts.length === 0) {
       container.innerHTML = `
         <div style="grid-column: 1/-1; text-align: center; padding: 2rem; background: #fee2e2; border-radius: 1rem; color: #991b1b;">
           <p><strong>Connection Error:</strong> Could not connect to the backend server.</p>
@@ -98,18 +125,18 @@ function showProductDetails(id) {
       <div class="details-info">
         <p class="product-category">${product.category || 'General'}</p>
         <h1>${product.name}</h1>
-        <p class="details-price">₹${product.price}</p>
+        <p class="details-price">RS. ${product.price.toLocaleString()}</p>
         <p class="details-description">${product.description || 'No description available for this premium item.'}</p>
         
-        <div class="actions" style="margin-top: 2rem;">
-          <button class="btn-primary" style="padding: 1.25rem; font-size: 1.125rem;" onclick="addToCart('${product._id}')">
+        <div class="actions">
+          <button class="btn-primary" onclick="addToCart('${product._id}')">
             <i class="fas fa-cart-plus"></i> Add to Cart
           </button>
-          <button class="btn-secondary" style="padding: 1.25rem; font-size: 1.125rem;" onclick="buyNow('${product._id}')">
+          <button class="btn-secondary" onclick="buyNow('${product._id}')">
             Buy Now
           </button>
-          <button class="btn-secondary ${isWishlisted ? 'active' : ''}" style="padding: 1.25rem;" onclick="toggleWishlist('${product._id}', event)">
-            <i class="${isWishlisted ? 'fas' : 'far'} fa-heart"></i>
+          <button class="btn-secondary ${isWishlisted ? 'active' : ''}" onclick="toggleWishlist('${product._id}', event)">
+            <i class="${isWishlisted ? 'fas' : 'far'} fa-bookmark"></i>
           </button>
         </div>
       </div>

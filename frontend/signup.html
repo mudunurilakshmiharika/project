@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sign Up | LuxeStore</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=2">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
 </head>
@@ -34,13 +34,17 @@
       </div>
       <button type="submit" class="btn-auth">Create Account</button>
     </form>
-    <p style="margin-top: 1.5rem; text-align: center; font-size: 0.85rem; color: #666;">
-      Already have an account? <a href="login.html" style="color: #000; font-weight: 600;">Sign In</a>
+    <p style="margin-top: 1.5rem; text-align: center; font-size: 0.85rem; color: var(--secondary);">
+      Already have an account? <a href="login.html" style="color: #fff; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Sign In</a>
     </p>
   </div>
 </main>
 
 <script>
+  const AUTH_API = window.location.hostname === "project-7-zgr1.onrender.com" 
+    ? "https://project-7-zgr1.onrender.com/api/auth/signup" 
+    : "http://localhost:5000/api/auth/signup";
+
   document.getElementById("signup-form").addEventListener("submit", async (e) => {
     e.preventDefault();
     const name = document.getElementById("name").value;
@@ -48,7 +52,7 @@
     const password = document.getElementById("password").value;
 
     try {
-      const res = await fetch("https://project-7-zgr1.onrender.com/api/auth/signup", {
+      const res = await fetch(AUTH_API, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password })

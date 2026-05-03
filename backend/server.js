@@ -1,5 +1,6 @@
 const path = require("path");
 require("dotenv").config({ path: path.resolve(__dirname, ".env") });
+
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
@@ -19,9 +20,12 @@ app.use("/api/products", require("./routes/ProductRoutes"));
 app.use("/api/auth", require("./routes/AuthRoutes"));
 app.use("/api/orders", require("./routes/OrderRoutes"));
 
-// ✅ Root route (ADD THIS HERE)
+// ⭐ ADD PAYMENT ROUTE HERE
+app.use("/api/payment", require("./routes/paymentRoutes"));
+
+// ✅ Root route
 app.get("/", (req, res) => {
-  res.send("API is running");
+  res.send("API is running 🚀");
 });
 
 // ✅ Start server
