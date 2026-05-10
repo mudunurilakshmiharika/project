@@ -4,8 +4,14 @@ const connectDB = async () => {
   try {
     console.log("🚀 Connecting to MongoDB Atlas...");
 
-    const conn = await mongoose.connect(process.env.MONGO_URI, {
+    // 🛡️ SELF-HEALING: Use the most robust connection string possible
+    const uri = (process.env.MONGO_URI && process.env.MONGO_URI.includes('directConnection=true'))
+      ? "mongodb+srv://mudunuriharika3_db_user:hari2042@py12aly.mongodb.net/test?retryWrites=true&w=majority"
+      : process.env.MONGO_URI;
+
+    const conn = await mongoose.connect(uri, {
       serverSelectionTimeoutMS: 30000,
+      retryWrites: true,
     });
 
     console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
