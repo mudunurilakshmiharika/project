@@ -18,6 +18,6 @@ const orderSchema = new mongoose.Schema({
   paymentId: String,
   orderId: String,
   createdAt: { type: Date, default: Date.now },
-}, { bufferCommands: false });
+}, { timestamps: true });
 
 module.exports = mongoose.model("Order", orderSchema);

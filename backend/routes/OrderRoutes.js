@@ -86,9 +86,12 @@ router.post("/", async (req, res) => {
       order: savedOrder 
     });
 
-  } catch (error) {
-    console.error("Order Creation Error:", error);
-    res.status(500).json({ message: "Error placing order", error: error.message });
+    console.error("Order Creation Error Details:", error);
+    res.status(500).json({ 
+      message: "Error placing order", 
+      error: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined 
+    });
   }
 });
 

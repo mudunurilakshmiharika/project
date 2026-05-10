@@ -377,7 +377,7 @@
           window.location.href = "index.html";
         } else {
           const errorData = await response.json();
-          alert("Failed to place order: " + (errorData.message || "Unknown error"));
+          alert("Failed to place order: " + (errorData.error || errorData.message || "Unknown error"));
         }
       } catch (error) {
         console.error("Order Error:", error);
