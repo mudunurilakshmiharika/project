@@ -72,7 +72,7 @@ const seedProducts = [
   {
     name: "Chino Trousers",
     price: 2799,
-    image: "https://images.unsplash.com/photo-1594932224012-c59d04584999?w=800",
+    image: "https://images.unsplash.com/photo-1624373114147-6998db86cd79?w=800",
     description: "Smart-casual beige chinos, mannequin display style.",
     category: "Men's Fashion",
   },
