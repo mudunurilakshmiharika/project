@@ -86,6 +86,7 @@ router.post("/", async (req, res) => {
       order: savedOrder 
     });
 
+  } catch (error) {
     console.error("Order Creation Error Details:", error);
     res.status(500).json({ 
       message: "Error placing order", 
