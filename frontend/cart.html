@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Cart | LuxeStore</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    .cart-item {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      background: var(--card-bg);
+      padding: 1.5rem;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .cart-item img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 0.25rem;
+    }
+    .cart-item-info {
+      flex: 1;
+    }
+    .cart-summary {
+      background: var(--card-bg);
+      padding: 2.5rem;
+      border-radius: 0.5rem;
+      margin-top: 2rem;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+    }
+    .total-price {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--secondary);
+      margin: 1rem 0;
+    }
+    .payment-options {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      margin-top: 1.5rem;
+    }
+    .payment-btn {
+      justify-content: flex-start !important;
+      padding: 1.25rem !important;
+      font-size: 1.1rem !important;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .payment-btn i {
+      font-size: 1.5rem;
+    }
+    input, textarea {
+      background: rgba(255, 255, 255, 0.05) !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      color: white !important;
+      outline: none;
+    }
+    input:focus, textarea:focus {
+      border-color: var(--secondary) !important;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="logo">
+    <i class="fas fa-shopping-bag"></i> LuxeStore
+  </a>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="wishlist.html">Wishlist</a>
+    <a href="cart.html">Cart</a>
+  </nav>
+</header>
+
+<main class="container">
+  <h2>Shopping Cart</h2>
+  <div id="cart-items">
+    <!-- Cart items will be loaded here -->
+  </div>
+
+  <div class="cart-summary" id="cart-summary" style="display: none;">
+    <p>Total Items: <span id="total-items">0</span></p>
+    <p class="total-price">Total Price: ₹<span id="total-price">0</span></p>
+    <button class="btn-primary" id="checkout-btn" style="margin-top: 1rem; padding: 1rem 2rem;" onclick="showAddressSection()">
+      Proceed to Checkout
+    </button>
+  </div>
+
+  <div id="address-section" class="cart-summary" style="display: none; text-align: left;">
+    <h3 style="margin-bottom: 1.5rem;">Shipping Address</h3>
+    <div class="address-form">
+      <div class="form-group" style="margin-bottom: 1rem;">
+        <label>Full Name</label>
+        <input type="text" id="ship-name" placeholder="Enter your name" style="width: 100%; padding: 0.75rem; border-radius: 0.5rem; border: 1px solid #e2e8f0;">
+      </div>
+      <div class="form-group" style="margin-bottom: 1rem;">
+        <label>Address</label>
+        <textarea id="ship-address" placeholder="Enter your full address" style="width: 100%; padding: 0.75rem; border-radius: 0.5rem; border: 1px solid #e2e8f0;"></textarea>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+        <div class="form-group">
+          <label>City</label>
+          <input type="text" id="ship-city" placeholder="City" style="width: 100%; padding: 0.75rem; border-radius: 0.5rem; border: 1px solid #e2e8f0;">
+        </div>
+        <div class="form-group">
+          <label>Pincode</label>
+          <input type="text" id="ship-pincode" placeholder="Pincode" style="width: 100%; padding: 0.75rem; border-radius: 0.5rem; border: 1px solid #e2e8f0;">
+        </div>
+      </div>
+    </div>
+    <button class="btn-primary" style="width: 100%; padding: 1rem;" onclick="showMethodSelection()">
+      Continue
+    </button>
+    <button class="btn-secondary" style="margin-top: 1rem;" onclick="backToCart()">
+      <i class="fas fa-arrow-left"></i> Back to Cart
+    </button>
+  </div>
+
+  <div id="method-selection-section" class="cart-summary" style="display: none; text-align: left;">
+    <h3 style="margin-bottom: 1.5rem;">Payment Method</h3>
+    <button class="btn-secondary payment-btn" onclick="handleMethodChoice('Online')">
+      <i class="fas fa-globe"></i> Online Payment (GPay, PhonePe, Card)
+    </button>
+    <button class="btn-secondary payment-btn" style="margin-top: 1rem;" onclick="handleMethodChoice('COD')">
+      <i class="fas fa-truck"></i> Cash on Delivery
+    </button>
+    <button class="btn-secondary" style="margin-top: 2rem;" onclick="backToAddress()">
+      <i class="fas fa-arrow-left"></i> Back to Address
+    </button>
+  </div>
+
+  <div id="payment-section" class="cart-summary" style="display: none; text-align: left;">
+    <h3 style="margin-bottom: 1.5rem;">Online Payment Options</h3>
+    <div class="payment-options">
+      <button class="btn-secondary payment-btn" onclick="handleRazorpay()">
+        <i class="fab fa-google-pay fa-2x"></i> Google Pay
+      </button>
+      <button class="btn-secondary payment-btn" onclick="handleRazorpay()">
+        <i class="fas fa-mobile-alt"></i> PhonePe
+      </button>
+      <button class="btn-secondary payment-btn" onclick="handleRazorpay()">
+        <i class="fas fa-credit-card"></i> Card
+      </button>
+    </div>
+    <button class="btn-secondary" style="margin-top: 1rem;" onclick="showMethodSelection()">
+      <i class="fas fa-arrow-left"></i> Back
+    </button>
+  </div>
+  <div id="empty-cart" style="text-align: center; margin-top: 4rem;">
+    <i class="fas fa-shopping-cart fa-4x" style="color: #cbd5e1; margin-bottom: 1rem;"></i>
+    <h3>Your cart is empty</h3>
+    <a href="index.html" class="btn-primary" style="display: inline-block; margin-top: 1rem; text-decoration: none;">Continue Shopping</a>
+  </div>
+</main>
+
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script>
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const BASE_URL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.protocol === "file:"
+        ? "http://localhost:5000" 
+        : "https://project-11-1n64.onrender.com";
+
+    function displayCart() {
+      const container = document.getElementById("cart-items");
+      const summary = document.getElementById("cart-summary");
+      const empty = document.getElementById("empty-cart");
+      
+      if (cart.length === 0) {
+        container.innerHTML = "";
+        summary.style.display = "none";
+        empty.style.display = "block";
+        return;
+      }
+
+      empty.style.display = "none";
+      summary.style.display = "block";
+      container.innerHTML = "";
+
+      let total = 0;
+      cart.forEach((item, index) => {
+        total += item.price;
+        const div = document.createElement("div");
+        div.className = "cart-item";
+        div.innerHTML = `
+          <img src="${item.image}" alt="${item.name}">
+          <div class="cart-item-info">
+            <h3>${item.name}</h3>
+            <p class="product-price">₹${item.price.toLocaleString()}</p>
+          </div>
+          <button class="btn-secondary" onclick="removeFromCart(${index})" style="color: #ef4444;">
+            <i class="fas fa-trash"></i>
+          </button>
+        `;
+        container.appendChild(div);
+      });
+
+      document.getElementById("total-items").textContent = cart.length;
+      document.getElementById("total-price").textContent = total;
+    }
+
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      displayCart();
+    }
+
+    function showAddressSection() {
+      try {
+        document.getElementById("cart-summary").style.display = "none";
+        document.getElementById("address-section").style.display = "block";
+        document.getElementById("cart-items").style.display = "none";
+        window.scrollTo(0, 0);
+      } catch (e) { console.error("UI Toggle Error:", e); }
+    }
+
+    function backToCart() {
+      document.getElementById("cart-summary").style.display = "block";
+      document.getElementById("address-section").style.display = "none";
+      document.getElementById("cart-items").style.display = "block";
+    }
+
+    function showMethodSelection() {
+      try {
+        const name = document.getElementById("ship-name").value;
+        const address = document.getElementById("ship-address").value;
+        const city = document.getElementById("ship-city").value;
+        const pincode = document.getElementById("ship-pincode").value;
+        
+        if (!name || !address || !city || !pincode) {
+          alert("Please fill in all shipping details (Name, Address, City, and Pincode).");
+          return;
+        }
+
+        console.log("Proceeding to method selection...");
+        document.getElementById("address-section").style.display = "none";
+        document.getElementById("method-selection-section").style.display = "block";
+        document.getElementById("payment-section").style.display = "none";
+        window.scrollTo(0, 0);
+      } catch (e) {
+        console.error("Method Selection Error:", e);
+        alert("An error occurred while proceeding. Please check the console.");
+      }
+    }
+
+    function backToAddress() {
+      document.getElementById("address-section").style.display = "block";
+      document.getElementById("method-selection-section").style.display = "none";
+    }
+
+    function handleMethodChoice(choice) {
+      if (choice === 'COD') {
+        submitOrder('Cash on Delivery');
+      } else {
+        handleRazorpay();
+      }
+    }
+
+    async function handleRazorpay() {
+      const priceText = document.getElementById("total-price").textContent;
+      const totalAmount = parseFloat(priceText);
+      const user = JSON.parse(localStorage.getItem("user"));
+
+      alert(`DEBUG: Connecting to ${BASE_URL}/api/payment/create-order`);
+      console.log("Initiating Razorpay for amount:", totalAmount);
+
+      if (!user) {
+        alert("Please login to proceed.");
+        window.location.href = "login.html";
+        return;
+      }
+
+      if (isNaN(totalAmount) || totalAmount <= 0) {
+        alert("Invalid total amount. Please refresh the page.");
+        return;
+      }
+
+      try {
+        alert("Preparing secure payment gateway... Please wait.");
+        // 1. Create order on backend
+        const res = await fetch(`${BASE_URL}/api/payment/create-order`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ amount: totalAmount })
+        });
+
+        if (!res.ok) {
+          const errorData = await res.json();
+          throw new Error(errorData.message || "Backend order creation failed");
+        }
+
+        const order = await res.json();
+        console.log("Backend Order Created:", order);
+
+        // 2. Open Razorpay Checkout
+        const options = {
+          key: "rzp_test_SmlDCJCy7b8JGi", // Updated to match .env
+          amount: order.amount,
+          currency: order.currency,
+          name: "LuxeStore",
+          description: "Premium Fashion Purchase",
+          order_id: order.id,
+          handler: async function (response) {
+            // Verify payment
+            const verifyRes = await fetch(`${BASE_URL}/api/payment/verify`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                ...response,
+                email: user.email,
+                products: cart,
+                amount: totalAmount
+              })
+            });
+
+            const verifyData = await verifyRes.json();
+            if (verifyData.success) {
+              submitOrder('Razorpay Online', response.razorpay_payment_id);
+            } else {
+              alert("Payment verification failed: " + (verifyData.message || "Unknown error"));
+            }
+          },
+          prefill: {
+            name: document.getElementById("ship-name").value,
+            email: user.email,
+          },
+          theme: { color: "#1e293b" }
+        };
+
+        const rzp = new Razorpay(options);
+        rzp.open();
+      } catch (error) {
+        console.error("Razorpay Error:", error);
+        alert("Error initiating payment: " + error.message);
+      }
+    }
+
+    async function submitOrder(method, paymentId = null) {
+      const total = document.getElementById("total-price").innerText;
+      const name = document.getElementById("ship-name").value;
+      const address = document.getElementById("ship-address").value;
+      const city = document.getElementById("ship-city").value;
+      const pincode = document.getElementById("ship-pincode").value;
+      const user = JSON.parse(localStorage.getItem("user"));
+
+      const orderData = {
+        userId: user ? user.id : null,
+        userEmail: user ? user.email : null,
+        items: cart,
+        totalAmount: parseFloat(total),
+        shippingAddress: { name, address, city, pincode },
+        paymentMethod: method,
+        paymentId: paymentId,
+        status: method === 'Cash on Delivery' ? 'Pending' : 'Paid'
+      };
+
+      alert(`DEBUG: Submitting order to ${BASE_URL}/api/orders`);
+      try {
+        const response = await fetch(`${BASE_URL}/api/orders`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(orderData)
+        });
+
+        if (response.ok) {
+          alert(`Order Placed Successfully via ${method}!`);
+          localStorage.removeItem("cart");
+          window.location.href = "index.html";
+        } else {
+          const errorData = await response.json();
+          alert("Failed to place order: " + (errorData.message || "Unknown error"));
+        }
+      } catch (error) {
+        console.error("Order Error:", error);
+        alert("Error connecting to server. Please ensure the backend is running.");
+      }
+    }
+
+    displayCart();
+  </script>
+</body>
+</html>
