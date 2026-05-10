@@ -166,7 +166,7 @@
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <script>
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
-    const BASE_URL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.protocol === "file:"
+    const BASE_URL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
         ? "http://localhost:5000" 
         : "https://project-12-d2tc.onrender.com";
 
