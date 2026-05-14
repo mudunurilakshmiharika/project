@@ -70,13 +70,6 @@ const seedProducts = [
     category: "Men's Fashion",
   },
   {
-    name: "Chino Trousers",
-    price: 2799,
-    image: "https://images.pexels.com/photos/1598507/pexels-photo-1598507.jpeg?auto=compress&cs=tinysrgb&w=800",
-    description: "Smart-casual beige chinos, mannequin display style.",
-    category: "Men's Fashion",
-  },
-  {
     name: "Knitted Sweater",
     price: 3999,
     image: "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=800",

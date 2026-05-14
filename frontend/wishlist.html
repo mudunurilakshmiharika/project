@@ -34,7 +34,16 @@
 </main>
 
 <script>
-  let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+  function getCartKey() {
+    const user = JSON.parse(localStorage.getItem("user"));
+    return user ? `cart_${user.email}` : 'cart';
+  }
+  function getWishlistKey() {
+    const user = JSON.parse(localStorage.getItem("user"));
+    return user ? `wishlist_${user.email}` : 'wishlist';
+  }
+
+  let wishlist = JSON.parse(localStorage.getItem(getWishlistKey())) || [];
 
   function displayWishlist() {
     const container = document.getElementById("wishlist-items");
@@ -75,16 +84,16 @@
 
   function removeFromWishlist(id) {
     wishlist = wishlist.filter(item => item._id !== id);
-    localStorage.setItem("wishlist", JSON.stringify(wishlist));
+    localStorage.setItem(getWishlistKey(), JSON.stringify(wishlist));
     displayWishlist();
   }
 
   function moveToCart(id) {
     const item = wishlist.find(p => p._id === id);
     if (item) {
-      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      let cart = JSON.parse(localStorage.getItem(getCartKey())) || [];
       cart.push(item);
-      localStorage.setItem("cart", JSON.stringify(cart));
+      localStorage.setItem(getCartKey(), JSON.stringify(cart));
       removeFromWishlist(id);
       alert("Moved to cart!");
     }

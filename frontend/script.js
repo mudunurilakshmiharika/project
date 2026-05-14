@@ -1,9 +1,26 @@
+// 🚀 FRESH START: Automatically logout when first opening the app in a new tab/session
+if (!sessionStorage.getItem("session_started")) {
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+  sessionStorage.setItem("session_started", "true");
+}
+
 const API_URL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
     ? "http://localhost:5000/api/products" 
     : "https://project-11-1n64.onrender.com/api/products";
 
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
-let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+// 👉 Storage Helpers for user-specific persistence
+function getCartKey() {
+  const user = JSON.parse(localStorage.getItem("user"));
+  return user ? `cart_${user.email}` : 'cart';
+}
+function getWishlistKey() {
+  const user = JSON.parse(localStorage.getItem("user"));
+  return user ? `wishlist_${user.email}` : 'wishlist';
+}
+
+let cart = JSON.parse(localStorage.getItem(getCartKey())) || [];
+let wishlist = JSON.parse(localStorage.getItem(getWishlistKey())) || [];
 let allProducts = [];
 
 // 👉 Fallback data in case the backend is unreachable (e.g. CORS issues with file://)
@@ -13,7 +30,6 @@ const FALLBACK_PRODUCTS = [
   { _id: "f3", name: "Cotton Crew Neck T-Shirt", price: 999, image: "https://images.unsplash.com/photo-1544441893-675973e31985?w=800", category: "Men's Fashion", description: "Soft 100% cotton t-shirt, studio mannequin shot." },
   { _id: "f4", name: "Formal White Shirt", price: 2499, image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800", category: "Men's Fashion", description: "Crisp white button-down shirt for a sharp look." },
   { _id: "f5", name: "Casual Bomber Jacket", price: 5999, image: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=800", category: "Men's Fashion", description: "Versatile olive green bomber on display." },
-  { _id: "f6", name: "Chino Trousers", price: 2799, image: "https://images.pexels.com/photos/1598507/pexels-photo-1598507.jpeg?auto=compress&cs=tinysrgb&w=800", category: "Men's Fashion", description: "Smart-casual beige chinos, catalog style." },
   { _id: "f7", name: "Knitted Sweater", price: 3999, image: "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=800", category: "Men's Fashion", description: "Warm grey knitted sweater, mannequin fit." },
   { _id: "f8", name: "Chelsea Boots", price: 8999, image: "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=800", category: "Men's Fashion", description: "Stylish brown suede Chelsea boots." },
   { _id: "f9", name: "Canvas Sneakers", price: 4499, image: "https://images.unsplash.com/photo-1542272454315-4c01d7abdf4a?w=800", category: "Men's Fashion", description: "Minimalist white canvas sneakers." },
@@ -158,7 +174,7 @@ async function addToCart(id, showAlert = true) {
   const product = allProducts.find(p => p._id === id);
   if (product) {
     cart.push(product);
-    localStorage.setItem("cart", JSON.stringify(cart));
+    localStorage.setItem(getCartKey(), JSON.stringify(cart));
     updateCounts();
     if (showAlert) {
       alert(`${product.name} added to cart!`);
@@ -190,7 +206,7 @@ async function toggleWishlist(id, event) {
     wishlist.push(product);
   }
 
-  localStorage.setItem("wishlist", JSON.stringify(wishlist));
+  localStorage.setItem(getWishlistKey(), JSON.stringify(wishlist));
   updateCounts();
   
   if (document.getElementById("product-details-view").style.display === "block") {
@@ -248,6 +264,11 @@ function checkAuth() {
     if (!loginLink || !signupLink || !logoutLink || !userName) return;
 
     if (user && user.name) {
+      // 🔄 Sync user-specific cart on login
+      cart = JSON.parse(localStorage.getItem(getCartKey())) || [];
+      wishlist = JSON.parse(localStorage.getItem(getWishlistKey())) || [];
+      updateCounts();
+
       loginLink.style.display = "none";
       signupLink.style.display = "none";
       logoutLink.style.display = "inline";
@@ -267,8 +288,7 @@ function checkAuth() {
 function logout() {
   localStorage.removeItem("token");
   localStorage.removeItem("user");
-  localStorage.removeItem("cart"); // Clear cart on logout for security
-  localStorage.removeItem("wishlist");
+  // Keep cart and wishlist for persistence across sessions
   window.location.reload();
 }
 

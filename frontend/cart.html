@@ -165,7 +165,12 @@
 
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <script>
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    function getCartKey() {
+      const user = JSON.parse(localStorage.getItem("user"));
+      return user ? `cart_${user.email}` : 'cart';
+    }
+
+    let cart = JSON.parse(localStorage.getItem(getCartKey())) || [];
     const BASE_URL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
         ? "http://localhost:5000" 
         : "https://project-11-1n64.onrender.com";
@@ -210,7 +215,7 @@
 
     function removeFromCart(index) {
       cart.splice(index, 1);
-      localStorage.setItem("cart", JSON.stringify(cart));
+      localStorage.setItem(getCartKey(), JSON.stringify(cart));
       displayCart();
     }
 
@@ -373,7 +378,7 @@
 
         if (response.ok) {
           alert(`Order Placed Successfully via ${method}!`);
-          localStorage.removeItem("cart");
+          localStorage.removeItem(getCartKey());
           window.location.href = "index.html";
         } else {
           const errorData = await response.json();
