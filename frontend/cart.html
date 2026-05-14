@@ -275,7 +275,7 @@
       const totalAmount = parseFloat(priceText);
       const user = JSON.parse(localStorage.getItem("user"));
 
-      alert(`DEBUG: Connecting to ${BASE_URL}/api/payment/create-order`);
+      console.log(`Connecting to ${BASE_URL}/api/payment/create-order`);
       console.log("Initiating Razorpay for amount:", totalAmount);
 
       if (!user) {
@@ -290,7 +290,7 @@
       }
 
       try {
-        alert("Preparing secure payment gateway... Please wait.");
+        console.log("Preparing secure payment gateway...");
         // 1. Create order on backend
         const res = await fetch(`${BASE_URL}/api/payment/create-order`, {
           method: "POST",
@@ -368,7 +368,7 @@
         status: method === 'Cash on Delivery' ? 'Pending' : 'Paid'
       };
 
-      alert(`DEBUG: Submitting order to ${BASE_URL}/api/orders`);
+      console.log(`Submitting order to ${BASE_URL}/api/orders`);
       try {
         const response = await fetch(`${BASE_URL}/api/orders`, {
           method: "POST",
