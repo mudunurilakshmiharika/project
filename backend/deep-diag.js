@@ -2,7 +2,7 @@ const { MongoClient } = require('mongodb');
 require('dns').setServers(['8.8.8.8']);
 
 // The exact string you provided with the password Hari123
-const uri = "mongodb+srv://lakshmimudunuri53_db_user:Hari123@eiv5.2pksqqm.mongodb.net/?appName=eiv5";
+const uri = "mongodb://mudunuriharika3_db_user:hari2042@ac-cecc9oi-shard-00-00.py12aly.mongodb.net:27017/test?authSource=admin&directConnection=true&tls=true";
 
 const client = new MongoClient(uri, {
   serverSelectionTimeoutMS: 5000,
